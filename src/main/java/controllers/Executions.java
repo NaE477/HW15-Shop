@@ -59,10 +59,12 @@ public class Executions {
 
     private static void guideAdmin(Integer adminId) {
         AdminController controller = new AdminController(factory,adminId);
+        controller.entry();
     }
 
     private static void guideUser(Integer customerId) {
         CustomerController controller = new CustomerController(factory,customerId);
+        controller.entry();
     }
 
     public static void signUp() {

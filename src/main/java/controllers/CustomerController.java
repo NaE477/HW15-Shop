@@ -33,4 +33,12 @@ public class CustomerController {
         orderedProductService = new OrderedProductServiceImpl(new OrderedProductRepositoryImpl(factory, OrderedProduct.class));
         customer = customerService.findById(customerId);
     }
+
+    public void entry() {
+        label:
+        while (true) {
+            System.out.println("1-Buy Product");
+            System.out.println("2-Notifications");
+        }
+    }
 }
