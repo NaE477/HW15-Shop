@@ -22,10 +22,17 @@ public class ViewNotificationUtil {
         customer = customerService.findById(customerId);
     }
 
-    public void view() {
+    public void unreadNotifications() {
         List<Notification> notifications = notificationService.findByCustomer(customer);
         notifications.stream().filter(notification -> !notification.getIsRead()).forEach(System.out::println);
         notifications.stream().filter(notification -> !notification.getIsRead()).forEach(notification -> notification.setIsRead(true));
-        notifications.stream().filter(notification -> !notification.getIsRead()).forEach(notificationService::update);
+        notifications.stream().filter(Notification::getIsRead).forEach(notificationService::update);
+    }
+
+    public void allNotifications() {
+        List<Notification> notifications = notificationService.findByCustomer(customer);
+        notifications.forEach(System.out::println);
+        notifications.stream().filter(notification -> !notification.getIsRead()).forEach(notification -> notification.setIsRead(true));
+        notifications.stream().filter(Notification::getIsRead).forEach(notificationService::update);
     }
 }

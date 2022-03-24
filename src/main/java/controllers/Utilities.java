@@ -42,6 +42,14 @@ public class Utilities {
         }
     }
 
+    public int positiveIntReceiver() {
+        while (true) {
+            int positive = intReceiver();
+            if (positive > 0) return positive;
+            else System.out.println("Enter positive numbers.");
+        }
+    }
+
     public double doubleReceiver() {
         while (true) {
             try {

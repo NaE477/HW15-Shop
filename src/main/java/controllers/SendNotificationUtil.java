@@ -8,16 +8,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import repositories.impls.NotificationRepositoryImpl;
 import repositories.impls.OrderedProductRepositoryImpl;
+import repositories.impls.ProductRepositoryImpl;
 import services.impls.NotificationServiceImpl;
 import services.impls.OrderedProductServiceImpl;
+import services.impls.ProductServiceImpl;
 import services.interfaces.NotificationService;
 import services.interfaces.OrderedProductService;
+import services.interfaces.ProductService;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Setter @Getter
 public class SendNotificationUtil {
     private final EntityManagerFactory factory;
@@ -25,6 +27,14 @@ public class SendNotificationUtil {
     private Boolean nameChanged;
     private Boolean descriptionChanged;
     private Boolean isCharged;
+
+    public SendNotificationUtil(EntityManagerFactory factory,Integer productId) {
+        this.factory = factory;
+        ProductService productService = new ProductServiceImpl(new ProductRepositoryImpl(factory,Product.class));
+        this.product = productService.findById(productId);
+
+        nameChanged = false; descriptionChanged = false; isCharged = false;
+    }
 
     public void sendNotifications() {
         OrderedProductService orderedProductService = new OrderedProductServiceImpl(new OrderedProductRepositoryImpl(factory,OrderedProduct.class));

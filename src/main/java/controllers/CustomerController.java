@@ -3,22 +3,19 @@ package controllers;
 import entities.products.OrderedProduct;
 import entities.products.Product;
 import entities.users.Customer;
-import entities.users.Notification;
 import repositories.impls.CustomerRepositoryImpl;
-import repositories.impls.NotificationRepositoryImpl;
 import repositories.impls.OrderedProductRepositoryImpl;
 import repositories.impls.ProductRepositoryImpl;
 import services.impls.CustomerServiceImpl;
-import services.impls.NotificationServiceImpl;
 import services.impls.OrderedProductServiceImpl;
 import services.impls.ProductServiceImpl;
 import services.interfaces.CustomerService;
-import services.interfaces.NotificationService;
 import services.interfaces.OrderedProductService;
 import services.interfaces.ProductService;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class CustomerController {
@@ -43,7 +40,8 @@ public class CustomerController {
         label:
         while (true) {
             System.out.println("1-Buy Product");
-            System.out.println("2-Notifications");
+            System.out.println("2-Unread Notifications");
+            System.out.println("2-All Notifications");
             System.out.println("0-Exit");
             switch (sc.nextLine()) {
                 case "1":
@@ -51,6 +49,9 @@ public class CustomerController {
                     break;
                 case "2":
                     notifications();
+                    break;
+                case "3":
+                    allNotifications();
                     break;
                 case "0":
                     break label;
@@ -62,11 +63,13 @@ public class CustomerController {
         List<Product> products = productService.findAll();
         utils.iterateThrough(products);
         System.out.println("Enter product ID to add ");
-        Product product = products.stream().filter(p -> p.getId() == utils.intReceiver()).findAny().orElse(null);
+        Integer productId = utils.intReceiver();
+        Product product = products.stream().filter(p -> Objects.equals(p.getId(), productId)).findAny().orElse(null);
         if (product == null) System.out.println("Wrong ID");
         else {
             System.out.println(product);
-            Integer quantity = utils.intReceiver();
+            System.out.println("Quantity: ");
+            Integer quantity = utils.positiveIntReceiver();
             if (quantity > product.getInStock()) System.out.println("Can't order bigger than stock");
             else {
                 var order = orderedProductService.insert(new OrderedProduct(customer,product,quantity,false));
@@ -77,6 +80,10 @@ public class CustomerController {
     }
 
     private void notifications() {
-        notificationUtil.view();
+        notificationUtil.unreadNotifications();
+    }
+
+    private void allNotifications() {
+        notificationUtil.allNotifications();
     }
 }

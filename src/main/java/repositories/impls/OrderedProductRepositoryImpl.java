@@ -14,11 +14,36 @@ public class OrderedProductRepositoryImpl extends BaseRepositoryImpl<OrderedProd
     }
 
     @Override
+    public OrderedProduct ins(OrderedProduct orderedProduct) {
+        var manager = super.getEntityManagerFactory().createEntityManager();
+        var transaction = manager.getTransaction();
+        try {
+            transaction.begin();
+
+            var productQty = manager
+                    .createQuery("select p.inStock from Product p where p.id = :productId", Integer.class)
+                    .setParameter("productId", orderedProduct.getProduct().getId())
+                    .getSingleResult();
+            manager.createQuery("update Product p set p.inStock = :newStock where p.id = :productId")
+                    .setParameter("newStock", productQty - orderedProduct.getQuantity())
+                    .setParameter("productId",orderedProduct.getProduct().getId())
+                    .executeUpdate();
+            manager.persist(orderedProduct);
+
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            return null;
+        }
+        return orderedProduct;
+    }
+
+    @Override
     public List<OrderedProduct> readAllByProduct(Product product) {
         var manager = super.getEntityManagerFactory().createEntityManager();
         try {
-            return manager.createQuery("select o from OrderedProduct o where o.product.id = :productId",getClazz())
-                    .setParameter("productId",product.getId())
+            return manager.createQuery("select o from OrderedProduct o where o.product.id = :productId", getClazz())
+                    .setParameter("productId", product.getId())
                     .getResultList();
         } catch (Exception e) {
             return new ArrayList<>();

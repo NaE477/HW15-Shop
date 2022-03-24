@@ -21,6 +21,7 @@ public class Executions {
     private static final Utilities utils = new Utilities();
 
     public static void main(String[] args) {
+        addFirstAdmin();
         label:
         while (true) {
             System.out.println("Press L/l to Login or S/s to Signup or X/x to exit: ");
@@ -83,6 +84,13 @@ public class Executions {
             String username = sc.nextLine();
             if (customerService.findByUsername(username) == null && adminService.findByUsername(username) == null) return username;
             else System.out.println("Username already exists");
+        }
+    }
+
+    private static void addFirstAdmin() {
+        if (adminService.findAll().size() == 0) {
+            adminService.insert(new Admin("admin","admin"));
+            System.out.println("User: admin Pass: admin added");
         }
     }
 }

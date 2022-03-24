@@ -87,7 +87,7 @@ public class AdminController {
         else {
             label:
             while (true) {
-                SendNotificationUtil notificationUtil = new SendNotificationUtil(factory); notificationUtil.setProduct(toEdit);
+                SendNotificationUtil notificationUtil = new SendNotificationUtil(factory,toEdit.getId());
                 System.out.println("1-Edit Name");
                 System.out.println("2-Edit Description");
                 System.out.println("3-Charge");
@@ -112,7 +112,9 @@ public class AdminController {
                         toEdit.setInStock(toEdit.getInStock() + chargeQty);
                         notificationUtil.setIsCharged(true);
                     case "0":
-                        if (notificationUtil.getDescriptionChanged() || notificationUtil.getIsCharged() || notificationUtil.getNameChanged()) {
+                        if (notificationUtil.getDescriptionChanged()
+                                || notificationUtil.getIsCharged()
+                                || notificationUtil.getNameChanged()) {
                             notificationUtil.sendNotifications();
                             productService.update(toEdit);
                         }
