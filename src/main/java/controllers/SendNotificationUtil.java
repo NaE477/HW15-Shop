@@ -2,6 +2,7 @@ package controllers;
 
 import entities.products.OrderedProduct;
 import entities.products.Product;
+import entities.users.Customer;
 import entities.users.Notification;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import services.interfaces.ProductService;
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter @Getter
 public class SendNotificationUtil {
@@ -37,10 +39,9 @@ public class SendNotificationUtil {
     }
 
     public void sendNotifications() {
-        OrderedProductService orderedProductService = new OrderedProductServiceImpl(new OrderedProductRepositoryImpl(factory,OrderedProduct.class));
-        List<OrderedProduct> orderedProducts = orderedProductService.findAllByProduct(product);
+        List<Customer> preBuyers = findPreBuyers(product);
         List<Notification> notifications = new ArrayList<>();
-        orderedProducts.forEach(o -> notifications.add(new Notification(o.getCustomer(),product,message(),false)));
+        preBuyers.forEach(preBuyer -> notifications.add(new Notification(preBuyer,product,message(),false)));
         NotificationService notificationService = new NotificationServiceImpl(new NotificationRepositoryImpl(factory,Notification.class));
         notifications.forEach(notificationService::insert);
     }
@@ -49,7 +50,17 @@ public class SendNotificationUtil {
         StringBuilder message = new StringBuilder("New Changes to Product: " + product);
         if (nameChanged) message.append("\nNew Name: ").append(product.getProductName());
         if (descriptionChanged) message.append("\nNew Description: ").append(product.getDescription());
-        if (isCharged) message.append("\nIs charged! In Stock: ").append(product.getInStock());
+        if (isCharged) message.append("\nIt is charged! In Stock: ").append(product.getInStock());
         return message.toString();
+    }
+
+    private List<Customer> findPreBuyers(Product product) {
+        OrderedProductService orderedProductService = new OrderedProductServiceImpl(new OrderedProductRepositoryImpl(factory,OrderedProduct.class));
+        return orderedProductService
+                .findAllByProduct(product)
+                .stream()
+                .filter(order -> !order.getIsFinalized())
+                .map(OrderedProduct::getCustomer)
+                .collect(Collectors.toList());
     }
 }

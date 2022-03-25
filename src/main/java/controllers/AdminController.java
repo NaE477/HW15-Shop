@@ -87,7 +87,7 @@ public class AdminController {
         else {
             label:
             while (true) {
-                SendNotificationUtil notificationUtil = new SendNotificationUtil(factory,toEdit.getId());
+                SendNotificationUtil notificationUtil = new SendNotificationUtil(factory, toEdit.getId());
                 System.out.println("1-Edit Name");
                 System.out.println("2-Edit Description");
                 System.out.println("3-Charge");
@@ -129,7 +129,7 @@ public class AdminController {
         String username = usernameReceiver();
         System.out.println("Password: ");
         String password = sc.nextLine();
-        Admin toIns = adminService.insert(new Admin(username,password));
+        Admin toIns = adminService.insert(new Admin(username, password));
         if (toIns != null) System.out.println("Admin created");
         else System.out.println("Something went wrong with the database.");
     }
@@ -146,7 +146,8 @@ public class AdminController {
         CustomerService customerService = new CustomerServiceImpl(new CustomerRepositoryImpl(factory, Customer.class));
         while (true) {
             String username = sc.nextLine();
-            if (adminService.findByUsername(username) == null && customerService.findByUsername(username) == null) return username;
+            if (adminService.findByUsername(username) == null && customerService.findByUsername(username) == null)
+                return username;
             else System.out.println("Username already exists");
         }
     }
