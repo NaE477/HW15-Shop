@@ -41,7 +41,7 @@ public class SendNotificationUtil {
     public void sendNotifications() {
         List<Customer> preBuyers = findPreBuyers(product);
         List<Notification> notifications = new ArrayList<>();
-        preBuyers.forEach(preBuyer -> notifications.add(new Notification(preBuyer,product,message(),false)));
+        preBuyers.forEach(preBuyer -> notifications.add(new Notification(preBuyer,message(),false)));
         NotificationService notificationService = new NotificationServiceImpl(new NotificationRepositoryImpl(factory,Notification.class));
         notifications.forEach(notificationService::insert);
     }

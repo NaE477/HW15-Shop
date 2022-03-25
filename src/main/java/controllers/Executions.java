@@ -10,6 +10,7 @@ import services.interfaces.AdminService;
 import services.interfaces.CustomerService;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
