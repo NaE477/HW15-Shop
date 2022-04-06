@@ -21,7 +21,6 @@ public class AdminController {
     private final AdminService adminService;
     private final ProductService productService;
     private final EntityManagerFactory factory;
-    private final Admin admin;
     private final Scanner sc;
     private final Utilities utils;
 
@@ -29,7 +28,7 @@ public class AdminController {
         adminService = new AdminServiceImpl(new AdminRepositoryImpl(factory, Admin.class));
         productService = new ProductServiceImpl(new ProductRepositoryImpl(factory, Product.class));
         this.factory = factory;
-        admin = adminService.findById(adminId);
+        Admin admin = adminService.findById(adminId);
         sc = new Scanner(System.in);
         utils = new Utilities();
     }
@@ -111,6 +110,7 @@ public class AdminController {
                         Integer chargeQty = positiveIntReceiver();
                         toEdit.setInStock(toEdit.getInStock() + chargeQty);
                         notificationUtil.setIsCharged(true);
+                        break;
                     case "0":
                         if (notificationUtil.getDescriptionChanged()
                                 || notificationUtil.getIsCharged()
